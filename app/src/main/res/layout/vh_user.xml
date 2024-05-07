@@ -7,37 +7,49 @@
     android:padding="16dp">
 
     <ImageView
-        android:id="@+id/photo"
+        android:id="@+id/userPhoto"
         android:layout_width="48dp"
         android:layout_height="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:src="@drawable/ic_launcher_background"/>
+        tools:src="@drawable/ic_launcher_background"
+        android:contentDescription="@string/user_image_description" />
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toTopOf="@id/subtitle"
+        app:layout_constraintBottom_toTopOf="@id/universityName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/photo"
+        app:layout_constraintStart_toEndOf="@id/userPhoto"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="George Russell" />
 
     <TextView
-        android:id="@+id/subtitle"
+        android:id="@+id/universityName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/userAge"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/userName"
+        app:layout_constraintTop_toBottomOf="@id/userName"
+        tools:text="F1 pilot" />
+
+    <TextView
+        android:id="@+id/userAge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/title"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        tools:text="F1 pilot" />
+        app:layout_constraintStart_toStartOf="@id/userName"
+        app:layout_constraintTop_toBottomOf="@id/universityName"
+        tools:text="24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

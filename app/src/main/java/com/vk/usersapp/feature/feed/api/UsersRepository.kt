@@ -8,7 +8,7 @@ class UsersRepository {
 
     suspend fun getUsers(): List<User> {
         return api.getUsers(
-            limit = 30,
+            limit = 0,
             skip = 0
         ).users
     }
@@ -16,7 +16,7 @@ class UsersRepository {
     suspend fun searchUsers(query: String): List<User> {
         return api.searchUsers(
             query = query,
-            limit = 30,
+            limit = 0,
             skip = 0
         ).users
     }

@@ -8,7 +8,6 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.isVisible
-import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -21,7 +20,8 @@ import com.vk.usersapp.core.asFlow
 import com.vk.usersapp.feature.feed.presentation.UserListAction
 import com.vk.usersapp.feature.feed.presentation.UserListFeature
 import com.vk.usersapp.feature.feed.presentation.UserListViewState
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
 class UserListFragment : Fragment() {
@@ -38,6 +38,7 @@ class UserListFragment : Fragment() {
         return LayoutInflater.from(requireContext()).inflate(R.layout.fr_user_list, container, false)
     }
 
+    @OptIn(FlowPreview::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recycler = view.findViewById(R.id.recycler)
         queryView = view.findViewById(R.id.search_input)
@@ -55,7 +56,11 @@ class UserListFragment : Fragment() {
                 feature?.viewStateFlow?.collect {
                     renderState(it)
                 }
-                queryView?.asFlow()?.collect {
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                queryView?.asFlow()?.debounce(1000)?.collect {
                     feature?.submitAction(UserListAction.QueryChanged(it))
                 }
             }
@@ -65,11 +70,7 @@ class UserListFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        feature?.let {
-            if (activity?.isFinishing == true) {
-                ViewModelProvider.destroyFeature(it.javaClass)
-            }
-        }
+        cleanUpViews()
         super.onDestroy()
     }
 
@@ -97,6 +98,19 @@ class UserListFragment : Fragment() {
                 errorView?.isVisible = false
                 loaderView?.isVisible = true
                 recycler?.isVisible = false
+            }
+        }
+    }
+
+    private fun cleanUpViews() {
+        recycler = null
+        queryView = null
+        errorView = null
+        loaderView = null
+
+        feature?.let {
+            if (activity?.isFinishing == true) {
+                ViewModelProvider.destroyFeature(it.javaClass)
             }
         }
     }
