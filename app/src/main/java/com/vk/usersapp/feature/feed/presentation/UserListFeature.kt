@@ -4,15 +4,16 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vk.usersapp.core.MVIFeature
+import com.vk.usersapp.di.annotations.BackgroundDispatcher
 import com.vk.usersapp.feature.feed.api.IUsersRepository
-import com.vk.usersapp.feature.feed.api.UsersRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 // MVI:
 //         Action                 patch, state                  newState                            viewState
@@ -23,17 +24,16 @@ import kotlinx.coroutines.withContext
 //          |            |
 //          |            v
 //          |-------- Feature
-
-class UserListFeature(
-    private val reducer: UserListReducer = UserListReducer(),
-    private val usersRepository: IUsersRepository = UsersRepository(),
-    backgroundDispatcher: CoroutineDispatcher? = null
+@HiltViewModel
+class UserListFeature @Inject constructor(
+    private val reducer: UserListReducer,
+    private val usersRepository: IUsersRepository,
+    @BackgroundDispatcher
+    private val backgroundDispatcher: CoroutineDispatcher
 ) : MVIFeature, ViewModel() {
     private val mutableViewStateFlow =
         MutableStateFlow<UserListViewState>(UserListViewState.Loading)
     val viewStateFlow: StateFlow<UserListViewState> = mutableViewStateFlow.asStateFlow()
-
-    private val backgroundDispatcher = backgroundDispatcher ?: Dispatchers.IO
 
     private var state: UserListState = UserListState()
 

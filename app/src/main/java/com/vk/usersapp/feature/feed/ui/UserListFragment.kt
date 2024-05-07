@@ -9,21 +9,23 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.vk.usersapp.R
-import com.vk.usersapp.core.ViewModelProvider
 import com.vk.usersapp.core.asFlow
 import com.vk.usersapp.feature.feed.presentation.UserListAction
 import com.vk.usersapp.feature.feed.presentation.UserListFeature
 import com.vk.usersapp.feature.feed.presentation.UserListViewState
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class UserListFragment : Fragment() {
 
     val adapter: UserListAdapter by lazy { UserListAdapter() }
@@ -32,7 +34,7 @@ class UserListFragment : Fragment() {
     var errorView: TextView? = null
     var loaderView: ProgressBar? = null
 
-    var feature: UserListFeature? = null
+    private val feature: UserListFeature by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return LayoutInflater.from(requireContext()).inflate(R.layout.fr_user_list, container, false)
@@ -47,26 +49,23 @@ class UserListFragment : Fragment() {
         recycler?.adapter = adapter
         recycler?.layoutManager = LinearLayoutManager(view.context)
 
-        feature = ViewModelProvider.obtainFeature {
-            UserListFeature()
-        }
-
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                feature?.viewStateFlow?.collect {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                feature.viewStateFlow.collect {
                     renderState(it)
                 }
             }
         }
+
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 queryView?.asFlow()?.debounce(1000)?.collect {
-                    feature?.submitAction(UserListAction.QueryChanged(it))
+                    feature.submitAction(UserListAction.QueryChanged(it))
                 }
             }
         }
 
-        feature?.submitAction(UserListAction.Init)
+        feature.submitAction(UserListAction.Init)
     }
 
     override fun onDestroy() {
@@ -107,11 +106,5 @@ class UserListFragment : Fragment() {
         queryView = null
         errorView = null
         loaderView = null
-
-        feature?.let {
-            if (activity?.isFinishing == true) {
-                ViewModelProvider.destroyFeature(it.javaClass)
-            }
-        }
     }
 }

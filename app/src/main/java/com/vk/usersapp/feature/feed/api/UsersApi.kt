@@ -1,8 +1,6 @@
 package com.vk.usersapp.feature.feed.api
 
-import com.vk.usersapp.feature.feed.model.User
 import com.vk.usersapp.feature.feed.model.UsersResponse
-import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
 import retrofit2.http.Query
 

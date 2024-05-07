@@ -1,7 +1,7 @@
 package com.vk.usersapp.feature.feed.api
 
-import com.vk.usersapp.core.Retrofit
 import com.vk.usersapp.feature.feed.model.User
+import javax.inject.Inject
 
 interface IUsersRepository {
     suspend fun getUsers(): List<User>
@@ -9,10 +9,7 @@ interface IUsersRepository {
     suspend fun searchUsers(query: String): List<User>
 }
 
-class UsersRepository(userApi: UsersApi? = null) : IUsersRepository {
-    private val api: UsersApi by lazy {
-        userApi ?: Retrofit.getClient().create(UsersApi::class.java)
-    }
+class UsersRepository @Inject constructor(private val api: UsersApi) : IUsersRepository {
 
     override suspend fun getUsers(): List<User> {
         return api.getUsers(

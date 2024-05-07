@@ -5,6 +5,7 @@ import com.vk.usersapp.feature.feed.api.IUsersRepository
 import com.vk.usersapp.feature.feed.model.User
 import com.vk.usersapp.feature.feed.presentation.UserListAction
 import com.vk.usersapp.feature.feed.presentation.UserListFeature
+import com.vk.usersapp.feature.feed.presentation.UserListReducer
 import com.vk.usersapp.feature.feed.presentation.UserListViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,9 +17,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.mockito.Mockito
-import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
@@ -26,6 +25,8 @@ import org.mockito.kotlin.whenever
 class UserListFeatureTest {
 
     private val usersRepository: IUsersRepository = mock()
+
+    private val reducer = UserListReducer()
 
     private val expectedUsers = listOf(
         User(
@@ -50,6 +51,7 @@ class UserListFeatureTest {
     fun `WHEN init action EXPECT loaded list`() = runTest {
         val userListFeature = UserListFeature(
             usersRepository = usersRepository,
+            reducer = reducer,
             backgroundDispatcher = Dispatchers.Main
         )
 
@@ -75,6 +77,7 @@ class UserListFeatureTest {
     fun `WHEN usersLoaded action EXPECT loaded list`() = runTest {
         val userListFeature = UserListFeature(
             usersRepository = usersRepository,
+            reducer = reducer,
             backgroundDispatcher = Dispatchers.Main
         )
 
@@ -96,6 +99,7 @@ class UserListFeatureTest {
     fun `WHEN empty query changed action EXPECT loaded list without query match`() = runTest {
         val userListFeature = UserListFeature(
             usersRepository = usersRepository,
+            reducer = reducer,
             backgroundDispatcher = Dispatchers.Main
         )
 
@@ -123,6 +127,7 @@ class UserListFeatureTest {
 
         val userListFeature = UserListFeature(
             usersRepository = usersRepository,
+            reducer = reducer,
             backgroundDispatcher = Dispatchers.Main
         )
 
@@ -149,6 +154,7 @@ class UserListFeatureTest {
 
         val userListFeature = UserListFeature(
             usersRepository = usersRepository,
+            reducer = reducer,
             backgroundDispatcher = Dispatchers.Main
         )
 
@@ -171,6 +177,7 @@ class UserListFeatureTest {
 
         val userListFeature = UserListFeature(
             usersRepository = usersRepository,
+            reducer = reducer,
             backgroundDispatcher = Dispatchers.Main
         )
 
