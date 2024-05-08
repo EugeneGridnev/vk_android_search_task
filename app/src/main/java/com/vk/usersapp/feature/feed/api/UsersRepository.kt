@@ -1,22 +1,27 @@
 package com.vk.usersapp.feature.feed.api
 
-import com.vk.usersapp.core.Retrofit
 import com.vk.usersapp.feature.feed.model.User
+import javax.inject.Inject
 
-class UsersRepository {
-    private val api: UsersApi by lazy { Retrofit.getClient().create(UsersApi::class.java) }
+interface IUsersRepository {
+    suspend fun getUsers(): List<User>
 
-    suspend fun getUsers(): List<User> {
+    suspend fun searchUsers(query: String): List<User>
+}
+
+class UsersRepository @Inject constructor(private val api: UsersApi) : IUsersRepository {
+
+    override suspend fun getUsers(): List<User> {
         return api.getUsers(
-            limit = 30,
+            limit = 0,
             skip = 0
         ).users
     }
 
-    suspend fun searchUsers(query: String): List<User> {
+    override suspend fun searchUsers(query: String): List<User> {
         return api.searchUsers(
             query = query,
-            limit = 30,
+            limit = 0,
             skip = 0
         ).users
     }

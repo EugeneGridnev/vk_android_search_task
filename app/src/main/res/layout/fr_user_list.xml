@@ -12,7 +12,8 @@
         android:layout_marginStart="16dp"
         app:layout_constraintTop_toTopOf="@id/search_input"
         app:layout_constraintBottom_toBottomOf="@id/search_input"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/search_image_description" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/search_input"
@@ -20,6 +21,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:inputType="text"
+        android:maxLines="1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/search_icon"
         app:layout_constraintEnd_toEndOf="parent" />
